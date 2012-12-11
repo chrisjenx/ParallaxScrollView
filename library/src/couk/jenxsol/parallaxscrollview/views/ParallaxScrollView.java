@@ -137,12 +137,12 @@ public class ParallaxScrollView extends ViewGroup
         }
         if (mBackground != null)
         {
-            int factorHeightChange = (int) (mScrollViewHeight * mParallaxOffset);
-            Log.d(TAG, "ScrollView height: " + mScrollViewHeight + " + factor: "
+            int factorHeightChange = (int) (mScrollContentHeight * mParallaxOffset);
+            Log.d(TAG, "ScrollView height: " + mScrollContentHeight + " + factor: "
                     + factorHeightChange);
             measureChild(mBackground, MeasureSpec.makeMeasureSpec(
                     MeasureSpec.getSize(widthMeasureSpec), MeasureSpec.EXACTLY),
-                    MeasureSpec.makeMeasureSpec((factorHeightChange + mScrollViewHeight) * 2,
+                    MeasureSpec.makeMeasureSpec(factorHeightChange + mScrollContentHeight,
                             MeasureSpec.EXACTLY));
             mBackgroundCentreOffset = -(mBackground.getMeasuredHeight() / 2)
                     + (getMeasuredHeight() / 2);
