@@ -4,7 +4,7 @@
     <declare-styleable name="ParallaxScrollView">
 
         <!-- gravity -->
-        <attr name="android:layout_gravity" />
+        <attr name="parallexOffset" format="float" />
     </declare-styleable>
 
 </resources>

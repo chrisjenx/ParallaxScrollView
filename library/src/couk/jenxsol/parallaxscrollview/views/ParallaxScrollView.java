@@ -1,8 +1,8 @@
 package couk.jenxsol.parallaxscrollview.views;
 
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.graphics.Canvas;
-import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.View;
@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ScrollView;
 
+import couk.jenxsol.parallaxscrollview.R;
 import couk.jenxsol.parallaxscrollview.views.ObservableScrollView.ScrollCallbacks;
 
 /**
@@ -21,7 +22,7 @@ public class ParallaxScrollView extends ViewGroup
 
     private static final String TAG = "ParallaxScrollView";
 
-    private static float PARALLAX_OFFSET_DEFAULT = 0.6f;
+    private static float PARALLAX_OFFSET_DEFAULT = 0.2f;
 
     /**
      * By how much should the background move to the foreground
@@ -29,7 +30,6 @@ public class ParallaxScrollView extends ViewGroup
     private float mParallaxOffset = PARALLAX_OFFSET_DEFAULT;
 
     private View mBackground;
-    private final Rect mBackgroundRect = new Rect();
     private ObservableScrollView mScrollView;
     private final ScrollCallbacks mScrollCallbacks = new ScrollCallbacks()
     {
@@ -40,9 +40,42 @@ public class ParallaxScrollView extends ViewGroup
         }
     };
 
+    // Layout stuff
+
+    private int mBackgroundRight;
+    private int mBackgroundBottom;
+    /**
+     * Height of the Foreground ScrollView Content
+     */
+    private int mScrollContentHeight = 0;
+    /**
+     * Height of the ScrollView, should be the same as this view
+     */
+    private int mScrollViewHeight = 0;
+    /**
+     * The multipler by how much to move the background to the foreground
+     */
+    private float mScrollDiff = 0f;
+
     public ParallaxScrollView(Context context, AttributeSet attrs, int defStyle)
     {
         super(context, attrs, defStyle);
+
+        TypedArray a = context.getTheme().obtainStyledAttributes(attrs,
+                R.styleable.ParallaxScrollView, 0, 0);
+
+        try
+        {
+            setParallaxOffset(a.getFloat(R.styleable.ParallaxScrollView_parallexOffset,
+                    PARALLAX_OFFSET_DEFAULT));
+        }
+        catch (Exception e)
+        {
+        }
+        finally
+        {
+            a.recycle();
+        }
     }
 
     public ParallaxScrollView(Context context, AttributeSet attrs)
@@ -130,19 +163,27 @@ public class ParallaxScrollView extends ViewGroup
                     MeasureSpec.getSize(widthMeasureSpec), MeasureSpec.AT_MOST),
                     MeasureSpec.makeMeasureSpec(MeasureSpec.getSize(heightMeasureSpec),
                             MeasureSpec.AT_MOST));
+
             mScrollContentHeight = mScrollView.getChildAt(0).getMeasuredHeight();
             mScrollViewHeight = mScrollView.getMeasuredHeight();
 
         }
         if (mBackground != null)
         {
+            int minHeight = 0;
+            minHeight = (int) (mScrollViewHeight + mParallaxOffset
+                    * (mScrollContentHeight - mScrollViewHeight));
+            minHeight = Math.max(minHeight, MeasureSpec.getSize(heightMeasureSpec));
+
             measureChild(mBackground, MeasureSpec.makeMeasureSpec(
                     MeasureSpec.getSize(widthMeasureSpec), MeasureSpec.EXACTLY),
-                    MeasureSpec.makeMeasureSpec(mScrollContentHeight, MeasureSpec.EXACTLY));
-            mBackgroundCentreOffset = -(mBackground.getMeasuredHeight() / 2)
-                    + (getMeasuredHeight() / 2);
+                    MeasureSpec.makeMeasureSpec(minHeight, MeasureSpec.EXACTLY));
+
             mBackgroundRight = getLeft() + mBackground.getMeasuredWidth();
             mBackgroundBottom = getTop() + mBackground.getMeasuredHeight();
+
+            mScrollDiff = (float) (mBackground.getMeasuredHeight() - mScrollViewHeight)
+                    / (float) (mScrollContentHeight - mScrollViewHeight);
         }
 
     }
@@ -152,9 +193,7 @@ public class ParallaxScrollView extends ViewGroup
     {
         if (mBackground != null)
         {
-            final int offset = (int) (mBackgroundCentreOffset + (mParallaxOffset * mScrollView
-                    .getScrollY()));
-            mBackground.layout(0, offset, mBackgroundRight, offset + mBackgroundBottom);
+            mBackground.layout(getLeft(), getTop(), mBackgroundRight, mBackgroundBottom);
         }
         final int parentLeft = getPaddingLeft();
         final int parentRight = right - left - getPaddingRight();
@@ -221,22 +260,16 @@ public class ParallaxScrollView extends ViewGroup
         }
     }
 
-    private int mBackgroundRight;
-    private int mBackgroundBottom;
-    private int mBackgroundCentreOffset = 0;
-    private int mScrollContentHeight = 0;
-    private int mScrollViewHeight = 0;
-
     @Override
     protected void dispatchDraw(Canvas canvas)
     {
         if (mBackground != null)
         {
-            final int scrollYCenterOffset = (mScrollContentHeight / 2)
-                    - (mScrollView.getScrollY() + mScrollViewHeight / 2);
-            final int offset = (int) (mBackgroundCentreOffset + (mParallaxOffset * scrollYCenterOffset));
+            final int scrollYCenterOffset = -mScrollView.getScrollY();
+            final int offset = (int) (scrollYCenterOffset * mScrollDiff);
             // Log.d(TAG, "Layout Scroll Y: " + scrollYCenterOffset +
-            // " Background Offset:" + offset);
+            // " ScrollDiff: " + mScrollDiff
+            // + " Background Offset:" + offset);
             mBackground.layout(getLeft(), offset, mBackgroundRight, offset + mBackgroundBottom);
         }
         super.dispatchDraw(canvas);
@@ -350,6 +383,7 @@ public class ParallaxScrollView extends ViewGroup
         {
             mScrollView.setLayoutParams(forground.getLayoutParams());
             mScrollView.setCallbacks(mScrollCallbacks);
+            mScrollView.setFillViewport(true);
         }
     }
 
