@@ -4,8 +4,11 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.util.AttributeSet;
+import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ScrollView;
 
 import couk.jenxsol.parallaxscrollview.views.ObservableScrollView.ScrollCallbacks;
@@ -15,6 +18,8 @@ import couk.jenxsol.parallaxscrollview.views.ObservableScrollView.ScrollCallback
  */
 public class ParallaxScrollView extends ViewGroup
 {
+    private static final int DEFAULT_CHILD_GRAVITY = Gravity.CENTER_HORIZONTAL;
+
     private static final String TAG = "ParallaxScrollView";
 
     private static float PARALLAX_OFFSET_DEFAULT = 0.2f;
@@ -120,17 +125,6 @@ public class ParallaxScrollView extends ViewGroup
     {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
 
-        if (mBackground != null)
-        {
-            measureChild(mBackground, MeasureSpec.makeMeasureSpec(
-                    MeasureSpec.getSize(widthMeasureSpec), MeasureSpec.AT_MOST),
-                    MeasureSpec.makeMeasureSpec(MeasureSpec.getSize(heightMeasureSpec),
-                            MeasureSpec.UNSPECIFIED));
-            mBackgroundCentreOffset = -(mBackground.getMeasuredHeight() / 2)
-                    + (getMeasuredHeight() / 2);
-            mBackgroundRight = getLeft() + mBackground.getMeasuredWidth();
-            mBackgroundBottom = getTop() + mBackground.getMeasuredHeight();
-        }
         if (mScrollView != null)
         {
             measureChild(mScrollView, MeasureSpec.makeMeasureSpec(
@@ -140,6 +134,20 @@ public class ParallaxScrollView extends ViewGroup
             mScrollContentHeight = mScrollView.getChildAt(0).getMeasuredHeight();
             mScrollViewHeight = mScrollView.getMeasuredHeight();
 
+        }
+        if (mBackground != null)
+        {
+            int factorHeightChange = (int) (mScrollViewHeight * mParallaxOffset);
+            Log.d(TAG, "ScrollView height: " + mScrollViewHeight + " + factor: "
+                    + factorHeightChange);
+            measureChild(mBackground, MeasureSpec.makeMeasureSpec(
+                    MeasureSpec.getSize(widthMeasureSpec), MeasureSpec.EXACTLY),
+                    MeasureSpec.makeMeasureSpec((factorHeightChange + mScrollViewHeight) * 2,
+                            MeasureSpec.EXACTLY));
+            mBackgroundCentreOffset = -(mBackground.getMeasuredHeight() / 2)
+                    + (getMeasuredHeight() / 2);
+            mBackgroundRight = getLeft() + mBackground.getMeasuredWidth();
+            mBackgroundBottom = getTop() + mBackground.getMeasuredHeight();
         }
 
     }
@@ -153,10 +161,67 @@ public class ParallaxScrollView extends ViewGroup
                     .getScrollY()));
             mBackground.layout(0, offset, mBackgroundRight, offset + mBackgroundBottom);
         }
-        if (mScrollView != null)
+        final int parentLeft = getPaddingLeft();
+        final int parentRight = right - left - getPaddingRight();
+        final int parentTop = getPaddingTop();
+        final int parentBottom = bottom - top - getPaddingBottom();
+        if (mScrollView != null && mScrollView.getVisibility() != GONE)
         {
-            mScrollView.layout(getLeft(), getTop(), getLeft() + mScrollView.getMeasuredWidth(),
-                    getTop() + mScrollView.getMeasuredHeight());
+            final FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) mScrollView
+                    .getLayoutParams();
+
+            final int width = mScrollView.getMeasuredWidth();
+            final int height = mScrollView.getMeasuredHeight();
+
+            int childLeft;
+            int childTop;
+
+            int gravity = lp.gravity;
+            if (gravity == -1)
+            {
+                gravity = DEFAULT_CHILD_GRAVITY;
+            }
+
+            final int horizontalGravity = gravity & Gravity.HORIZONTAL_GRAVITY_MASK;
+            final int verticalGravity = gravity & Gravity.VERTICAL_GRAVITY_MASK;
+
+            switch (horizontalGravity)
+            {
+                case Gravity.LEFT:
+                    childLeft = parentLeft + lp.leftMargin;
+                    break;
+                case Gravity.CENTER_HORIZONTAL:
+                    childLeft = parentLeft + (parentRight - parentLeft - width) / 2 + lp.leftMargin
+                            - lp.rightMargin;
+                    break;
+                case Gravity.RIGHT:
+                    childLeft = parentRight - width - lp.rightMargin;
+                    break;
+                default:
+                    childLeft = parentLeft + lp.leftMargin;
+            }
+
+            switch (verticalGravity)
+            {
+                case Gravity.TOP:
+                    childTop = parentTop + lp.topMargin;
+                    break;
+                case Gravity.CENTER_VERTICAL:
+                    childTop = parentTop + (parentBottom - parentTop - height) / 2 + lp.topMargin
+                            - lp.bottomMargin;
+                    break;
+                case Gravity.BOTTOM:
+                    childTop = parentBottom - height - lp.bottomMargin;
+                    break;
+                default:
+                    childTop = parentTop + lp.topMargin;
+            }
+
+            mScrollView.layout(childLeft, childTop, childLeft + width, childTop + height);
+
+            // mScrollView.layout(getLeft(), getTop(), getLeft() +
+            // mScrollView.getMeasuredWidth(),
+            // getTop() + mScrollView.getMeasuredHeight());
 
         }
     }
@@ -180,6 +245,37 @@ public class ParallaxScrollView extends ViewGroup
             mBackground.layout(getLeft(), offset, mBackgroundRight, offset + mBackgroundBottom);
         }
         super.dispatchDraw(canvas);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public LayoutParams generateLayoutParams(AttributeSet attrs)
+    {
+        return new FrameLayout.LayoutParams(getContext(), attrs);
+    }
+
+    @Override
+    protected ViewGroup.LayoutParams generateLayoutParams(ViewGroup.LayoutParams p)
+    {
+        return new FrameLayout.LayoutParams(p);
+    }
+
+    @Override
+    protected LayoutParams generateDefaultLayoutParams()
+    {
+        return new FrameLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT,
+                Gravity.CENTER_HORIZONTAL);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected boolean checkLayoutParams(ViewGroup.LayoutParams p)
+    {
+        return p instanceof FrameLayout.LayoutParams;
     }
 
     /**
@@ -224,7 +320,6 @@ public class ParallaxScrollView extends ViewGroup
         {
             // Attach the callback to it.
             mScrollView = (ObservableScrollView) forground;
-            mScrollView.setCallbacks(mScrollCallbacks);
         }
         else if (forground instanceof ViewGroup && !(forground instanceof ScrollView))
         {
@@ -234,7 +329,6 @@ public class ParallaxScrollView extends ViewGroup
             removeView(forground);
             mScrollView.addView(forground);
             addView(mScrollView, insertPos);
-            mScrollView.setCallbacks(mScrollCallbacks);
         }
         else if (forground instanceof ScrollView)
         {
@@ -248,7 +342,6 @@ public class ParallaxScrollView extends ViewGroup
             removeView(forground);
             if (child != null) mScrollView.addView(child);
             addView(mScrollView, insertPos);
-            mScrollView.setCallbacks(mScrollCallbacks);
         }
         else if (forground instanceof View)
         {
@@ -256,8 +349,13 @@ public class ParallaxScrollView extends ViewGroup
             removeView(forground);
             mScrollView.addView(forground);
             addView(mScrollView, insertPos);
+
+        }
+        if (mScrollView != null)
+        {
+            mScrollView.setLayoutParams(forground.getLayoutParams());
             mScrollView.setCallbacks(mScrollCallbacks);
         }
-
     }
+
 }

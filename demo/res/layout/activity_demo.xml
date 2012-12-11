@@ -4,32 +4,25 @@
     android:layout_height="match_parent"
     tools:context=".DemoActivity" >
 
-    <LinearLayout
+    <ImageView
         android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="fitXY"
+        android:src="@drawable/bg_sky" />
+
+    <FrameLayout
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@android:color/holo_blue_dark"
-        android:orientation="vertical"
-        tools:ignore="NewApi" >
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp" >
 
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="300dp"
             android:layout_height="wrap_content"
+            android:background="@android:color/holo_green_dark"
+            android:padding="16dp"
             android:text="@string/hello_world"
             tools:ignore="NewApi" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/hello_world"
-            tools:ignore="NewApi" />
-    </LinearLayout>
-
-    <TextView
-        android:layout_width="300dp"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:background="@android:color/holo_green_dark"
-        android:text="@string/hello_world"
-        tools:ignore="NewApi" />
+    </FrameLayout>
 
 </couk.jenxsol.parallaxscrollview.views.ParallaxScrollView>
