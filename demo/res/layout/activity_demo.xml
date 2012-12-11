@@ -1,8 +1,12 @@
-<couk.jenxsol.parallaxscrollview.views.ParallaxScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<couk.jenxsol.parallaxscrollview.views.ParallaxScrollView xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    app:parallexOffset=".3"
     tools:context=".DemoActivity" >
+
+    <!-- Background -->
 
     <ImageView
         android:layout_width="match_parent"
@@ -11,19 +15,64 @@
         android:scaleType="fitXY"
         android:src="@drawable/bg_sky" />
 
-    <FrameLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingLeft="16dp"
-        android:paddingRight="16dp" >
+    <!-- Foreground -->
+    <!-- You can place any of the items below as the foreground, but for most controll, add the scroll view yourself. -->
 
-        <TextView
+    <couk.jenxsol.parallaxscrollview.views.ObservableScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
+
+        <LinearLayout
             android:layout_width="260dp"
             android:layout_height="wrap_content"
-            android:background="@android:color/white"
-            android:padding="16dp"
-            android:text="@string/hello_world"
-            tools:ignore="NewApi" />
-    </FrameLayout>
+            android:orientation="vertical"
+            android:paddingBottom="@dimen/spacing"
+            android:paddingTop="@dimen/spacing" >
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@android:color/white"
+                android:padding="@dimen/spacing"
+                android:text="@string/hello_world"
+                tools:ignore="NewApi" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing"
+                android:background="@android:color/white"
+                android:padding="@dimen/spacing"
+                android:text="@string/hello_world"
+                tools:ignore="NewApi" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing"
+                android:background="@android:color/white"
+                android:padding="@dimen/spacing"
+                android:text="@string/hello_world"
+                tools:ignore="NewApi" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing"
+                android:background="@android:color/white"
+                android:padding="@dimen/spacing"
+                android:text="@string/hello_world"
+                tools:ignore="NewApi" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing"
+                android:background="@android:color/white"
+                android:padding="@dimen/spacing"
+                android:text="@string/hello_world"
+                tools:ignore="NewApi" />
+        </LinearLayout>
+    </couk.jenxsol.parallaxscrollview.views.ObservableScrollView>
 
 </couk.jenxsol.parallaxscrollview.views.ParallaxScrollView>
