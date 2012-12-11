@@ -6,7 +6,7 @@ A Parallax ScrollView which takes a background and foreground view, in the Paral
 Demo
 ----
 Please download the [demo](https://github.com/chrisjenx/ParallaxScrollView/downloads).
-Bakground Image Thanks too [shoptalklondon](http://shoptalklondon.com/sky-series-natural-gradients/)
+Bakground image thanks to [shoptalklondon](http://shoptalklondon.com/sky-series-natural-gradients/).
 
 Work in progress
 ----------------
