@@ -8,10 +8,6 @@ Demo
 Please download the [demo](https://github.com/chrisjenx/ParallaxScrollView/downloads).
 Bakground image thanks to [shoptalklondon](http://shoptalklondon.com/sky-series-natural-gradients/).
 
-Work in progress
-----------------
-
-Please bear with me, this is a work in progress and there **will** be bugs and layout issues.
 
 Usage
 -----
@@ -19,37 +15,67 @@ Look at the [demo](https://github.com/chrisjenx/ParallaxScrollView/downloads) la
 
 The basics are, that you need two views added to the ParallaxScrollView and it will do the rest.
 
-The first view added is the background, the second view added is the foreground. Layout and measuring is based roughly around a FrameLayout
-The foreground gets wrapped with a ObservableScrollView, so make sure you either impliment the ScrollView **or** Use a ViewGroup.
+
+* The first `View` added is the Background
+* The second `View` added is the Foreground. 
+
+Layout and measuring is based roughly around a FrameLayout.
+
+The foreground view gets wrapped with a ObservableScrollView regardless with what you put in there, so if you want full control of layout impliment like below.
+
+**Attributes**
+* `app:parallexOffset="0.3"` - this number needs to be between 0.1 and 1.0. otherwise it defaults to 0.3.
+* `ParallexScrollView.setParallexOffset(float)` - this is the programatic version of the offset value.
+
+**Background**
+The background will at the very minimum be the exact size as the parent (matches the ParallexScrollView size).
+If the ScrollView content is larger than the parent then background calculates a factor based on the scroll capacity, i.e. a parallexFactor of 0.5 will approximatly move the background at half the rate of the foreground scroll.
+
+**Foreground**
+Make sure you fill the parent, I haven't overridden this but I may in the future if people have issues with it, as the background will scroll based on the size of foreground content.
 
 Example Layout
 --------------
 ```xml
-<couk.jenxsol.parallaxscrollview.views.ParallaxScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<couk.jenxsol.parallaxscrollview.views.ParallaxScrollView xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    app:parallexOffset="0.25" >
+
+    <!-- Background -->
 
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:gravity="center"
         android:scaleType="fitXY"
         android:src="@drawable/bg_sky" />
 
-    <FrameLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingLeft="16dp"
-        android:paddingRight="16dp" >
+    <!-- Foreground -->
+    <!-- You can place any of the items below as the foreground, but for most control, add the scroll view yourself. -->
 
-        <TextView
-            android:layout_width="300dp"
+    <couk.jenxsol.parallaxscrollview.views.ObservableScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
+
+        <LinearLayout
+            android:layout_width="260dp"
             android:layout_height="wrap_content"
-            android:background="@android:color/holo_green_dark"
-            android:padding="16dp"
-            android:text="@string/hello_world"
-            tools:ignore="NewApi" />
-    </FrameLayout>
+            android:orientation="vertical"
+            android:paddingBottom="@dimen/spacing"
+            android:paddingTop="@dimen/spacing" >
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@android:color/white"
+                android:padding="@dimen/spacing"
+                android:text="@string/hello_world" />
+
+        </LinearLayout>
+    </couk.jenxsol.parallaxscrollview.views.ObservableScrollView>
 
 </couk.jenxsol.parallaxscrollview.views.ParallaxScrollView>
 ```
