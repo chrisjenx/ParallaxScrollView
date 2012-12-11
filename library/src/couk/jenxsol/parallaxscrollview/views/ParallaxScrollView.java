@@ -129,12 +129,32 @@ public class ParallaxScrollView extends ViewGroup
         super.addView(child, params);
     }
 
+    /**
+     * Set the offset
+     * 
+     * @param offset
+     *            a number between 0.1 and 1.0 inclusive
+     */
     public void setParallaxOffset(float offset)
     {
-        if (offset >= 0 && offset <= 1)
+        // Make sure we only get to .05 of a floating number
+        offset = (float) Math.rint(offset * 100) / 100;
+        if (offset >= 0.1 && offset <= 1)
             mParallaxOffset = offset;
         else
             mParallaxOffset = PARALLAX_OFFSET_DEFAULT;
+
+        requestLayout();
+    }
+
+    /**
+     * Get the current offset
+     * 
+     * @return
+     */
+    public float getParallaxOffset()
+    {
+        return mParallaxOffset;
     }
 
     /**
