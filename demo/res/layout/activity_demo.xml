@@ -17,9 +17,9 @@
         android:paddingRight="16dp" >
 
         <TextView
-            android:layout_width="300dp"
+            android:layout_width="260dp"
             android:layout_height="wrap_content"
-            android:background="@android:color/holo_green_dark"
+            android:background="@android:color/white"
             android:padding="16dp"
             android:text="@string/hello_world"
             tools:ignore="NewApi" />
