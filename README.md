@@ -1,7 +1,12 @@
 ParallaxScrollView
 ==================
 
-A Parallax ScrollView which takes a background and foreground view, in the ParallexScrollView. 
+A Parallax ScrollView which takes a background and foreground view, in the ParallexScrollView.
+
+Demo
+----
+Please download the [demo](https://github.com/chrisjenx/ParallaxScrollView/downloads).
+Bakground Image Thanks too [shoptalklondon](http://shoptalklondon.com/sky-series-natural-gradients/)
 
 Work in progress
 ----------------
@@ -10,7 +15,7 @@ Please bear with me, this is a work in progress and there **will** be bugs and l
 
 Usage
 -----
-Look at the demo layout for implimentation.
+Look at the [demo](https://github.com/chrisjenx/ParallaxScrollView/downloads) layout for implimentation.
 
 The basics are, that you need two views added to the ParallaxScrollView and it will do the rest.
 
@@ -48,3 +53,19 @@ Example Layout
 
 </couk.jenxsol.parallaxscrollview.views.ParallaxScrollView>
 ```
+
+Licence
+-------
+   Copyright 2012 Christopher Jenkins
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
