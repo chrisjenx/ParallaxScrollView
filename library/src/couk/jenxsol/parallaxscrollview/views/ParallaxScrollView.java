@@ -4,7 +4,6 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,7 +21,7 @@ public class ParallaxScrollView extends ViewGroup
 
     private static final String TAG = "ParallaxScrollView";
 
-    private static float PARALLAX_OFFSET_DEFAULT = 0.2f;
+    private static float PARALLAX_OFFSET_DEFAULT = 0.6f;
 
     /**
      * By how much should the background move to the foreground
@@ -137,13 +136,9 @@ public class ParallaxScrollView extends ViewGroup
         }
         if (mBackground != null)
         {
-            int factorHeightChange = (int) (mScrollContentHeight * mParallaxOffset);
-            Log.d(TAG, "ScrollView height: " + mScrollContentHeight + " + factor: "
-                    + factorHeightChange);
             measureChild(mBackground, MeasureSpec.makeMeasureSpec(
                     MeasureSpec.getSize(widthMeasureSpec), MeasureSpec.EXACTLY),
-                    MeasureSpec.makeMeasureSpec(factorHeightChange + mScrollContentHeight,
-                            MeasureSpec.EXACTLY));
+                    MeasureSpec.makeMeasureSpec(mScrollContentHeight, MeasureSpec.EXACTLY));
             mBackgroundCentreOffset = -(mBackground.getMeasuredHeight() / 2)
                     + (getMeasuredHeight() / 2);
             mBackgroundRight = getLeft() + mBackground.getMeasuredWidth();
