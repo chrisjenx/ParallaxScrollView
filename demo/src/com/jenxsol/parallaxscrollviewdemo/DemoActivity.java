@@ -63,11 +63,6 @@ public class DemoActivity extends Activity implements OnClickListener
             mMinus.setEnabled(false);
             mPlus.setEnabled(true);
         }
-        else if (offset * 100 >= 100)
-        {
-            mMinus.setEnabled(true);
-            mPlus.setEnabled(false);
-        }
         else
         {
             mMinus.setEnabled(true);

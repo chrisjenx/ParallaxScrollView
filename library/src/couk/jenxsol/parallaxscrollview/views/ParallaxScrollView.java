@@ -2,7 +2,6 @@ package couk.jenxsol.parallaxscrollview.views;
 
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.graphics.Canvas;
 import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.View;
@@ -36,7 +35,7 @@ public class ParallaxScrollView extends ViewGroup
         @Override
         public void onScrollChanged(int l, int t, int oldl, int oldt)
         {
-
+            requestLayout();
         }
     };
 
@@ -133,13 +132,13 @@ public class ParallaxScrollView extends ViewGroup
      * Set the offset
      * 
      * @param offset
-     *            a number between 0.1 and 1.0 inclusive
+     *            a number greater than 0.0
      */
     public void setParallaxOffset(float offset)
     {
         // Make sure we only get to .05 of a floating number
         offset = (float) Math.rint(offset * 100) / 100;
-        if (offset >= 0.1 && offset <= 1)
+        if (offset > 0.0)
             mParallaxOffset = offset;
         else
             mParallaxOffset = PARALLAX_OFFSET_DEFAULT;
@@ -211,10 +210,6 @@ public class ParallaxScrollView extends ViewGroup
     @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom)
     {
-        if (mBackground != null)
-        {
-            mBackground.layout(getLeft(), getTop(), mBackgroundRight, mBackgroundBottom);
-        }
         final int parentLeft = getPaddingLeft();
         final int parentRight = right - left - getPaddingRight();
         final int parentTop = getPaddingTop();
@@ -273,16 +268,8 @@ public class ParallaxScrollView extends ViewGroup
 
             mScrollView.layout(childLeft, childTop, childLeft + width, childTop + height);
 
-            // mScrollView.layout(getLeft(), getTop(), getLeft() +
-            // mScrollView.getMeasuredWidth(),
-            // getTop() + mScrollView.getMeasuredHeight());
-
         }
-    }
 
-    @Override
-    protected void dispatchDraw(Canvas canvas)
-    {
         if (mBackground != null)
         {
             final int scrollYCenterOffset = -mScrollView.getScrollY();
@@ -292,7 +279,6 @@ public class ParallaxScrollView extends ViewGroup
             // + " Background Offset:" + offset);
             mBackground.layout(getLeft(), offset, mBackgroundRight, offset + mBackgroundBottom);
         }
-        super.dispatchDraw(canvas);
     }
 
     /**
