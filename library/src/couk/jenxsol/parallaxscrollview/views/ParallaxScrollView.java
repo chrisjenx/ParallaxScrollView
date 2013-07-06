@@ -322,9 +322,9 @@ public class ParallaxScrollView extends ViewGroup
         if (getChildCount() == 1)
         {
             // Get the only child
-            final View forground = getChildAt(0);
+            final View foreground = getChildAt(0);
             organiseBackgroundView(null);
-            organiseForgroundView(forground);
+            organiseForegroundView(foreground);
         }
         else if (getChildCount() == 2)
         {
@@ -332,7 +332,7 @@ public class ParallaxScrollView extends ViewGroup
             final View foreground = getChildAt(1);
 
             organiseBackgroundView(background);
-            organiseForgroundView(foreground);
+            organiseForegroundView(foreground);
         }
         else
         {
@@ -345,49 +345,49 @@ public class ParallaxScrollView extends ViewGroup
         mBackground = background;
     }
 
-    private void organiseForgroundView(final View forground)
+    private void organiseForegroundView(final View foreground)
     {
         final int insertPos = getChildCount() - 1;
 
         // See if its a observable scroll view?
-        if (forground instanceof ObservableScrollView)
+        if (foreground instanceof ObservableScrollView)
         {
             // Attach the callback to it.
-            mScrollView = (ObservableScrollView) forground;
+            mScrollView = (ObservableScrollView) foreground;
         }
-        else if (forground instanceof ViewGroup && !(forground instanceof ScrollView))
+        else if (foreground instanceof ViewGroup && !(foreground instanceof ScrollView))
         {
             // See if it is a view group but not a scroll view and wrap it
             // with an observable ScrollView
             mScrollView = new ObservableScrollView(getContext(), null);
-            removeView(forground);
-            mScrollView.addView(forground);
+            removeView(foreground);
+            mScrollView.addView(foreground);
             addView(mScrollView, insertPos);
         }
-        else if (forground instanceof ScrollView)
+        else if (foreground instanceof ScrollView)
         {
             final View child;
-            if (((ScrollView) forground).getChildCount() > 0)
-                child = ((ScrollView) forground).getChildAt(0);
+            if (((ScrollView) foreground).getChildCount() > 0)
+                child = ((ScrollView) foreground).getChildAt(0);
             else
                 child = null;
 
             mScrollView = new ObservableScrollView(getContext(), null);
-            removeView(forground);
+            removeView(foreground);
             if (child != null) mScrollView.addView(child);
             addView(mScrollView, insertPos);
         }
-        else if (forground instanceof View)
+        else if (foreground instanceof View)
         {
             mScrollView = new ObservableScrollView(getContext(), null);
-            removeView(forground);
-            mScrollView.addView(forground);
+            removeView(foreground);
+            mScrollView.addView(foreground);
             addView(mScrollView, insertPos);
 
         }
         if (mScrollView != null)
         {
-            mScrollView.setLayoutParams(forground.getLayoutParams());
+            mScrollView.setLayoutParams(foreground.getLayoutParams());
             mScrollView.setCallbacks(mScrollCallbacks);
             mScrollView.setFillViewport(true);
         }
