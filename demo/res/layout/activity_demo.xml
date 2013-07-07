@@ -4,7 +4,7 @@
     android:id="@+id/scroll_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    app:parallexOffset=".3"
+    app:parallexOffset=".1"
     tools:context=".DemoActivity" >
 
     <!-- Background -->
@@ -17,7 +17,7 @@
         android:src="@drawable/bg_sky" />
 
     <!-- Foreground -->
-    <!-- You can place any of the items below as the foreground, but for most controll, add the scroll view yourself. -->
+    <!-- You can place any of the items below as the foreground, but for most control, add the scroll view yourself. -->
 
     <couk.jenxsol.parallaxscrollview.views.ObservableScrollView
         android:layout_width="match_parent"
@@ -70,6 +70,13 @@
                     android:layout_height="wrap_content"
                     android:text="+ 0.05" />
             </LinearLayout>
+
+            <Button
+                    android:layout_height="wrap_content"
+                    android:layout_width="match_parent"
+                    android:text="@string/horizontal_version"
+                    android:onClick="horizontalDemoActivity"
+                    />
 
             <TextView
                 android:layout_width="match_parent"
