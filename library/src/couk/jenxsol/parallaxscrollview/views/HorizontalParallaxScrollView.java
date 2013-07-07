@@ -45,11 +45,11 @@ public class HorizontalParallaxScrollView extends ViewGroup
     /**
      * Height of the Foreground ScrollView Content
      */
-    private int mScrollContentHeight = 0;
+    private int mScrollContentWidth = 0;
     /**
      * Height of the ScrollView, should be the same as this view
      */
-    private int mScrollViewHeight = 0;
+    private int mScrollViewWidth = 0;
     /**
      * The multipler by how much to move the background to the foreground
      */
@@ -177,31 +177,41 @@ public class HorizontalParallaxScrollView extends ViewGroup
 
         if (mScrollView != null)
         {
-            measureChild(mScrollView, MeasureSpec.makeMeasureSpec(
-                    MeasureSpec.getSize(widthMeasureSpec), MeasureSpec.AT_MOST),
-                    MeasureSpec.makeMeasureSpec(MeasureSpec.getSize(heightMeasureSpec),
-                            MeasureSpec.AT_MOST));
+            measureChild(mScrollView,
+                    MeasureSpec.makeMeasureSpec(
+                            MeasureSpec.getSize(widthMeasureSpec),
+                            MeasureSpec.AT_MOST
+                    ),
+                    MeasureSpec.makeMeasureSpec(
+                            MeasureSpec.getSize(heightMeasureSpec),
+                            MeasureSpec.AT_MOST
+                    )
+            );
 
-            mScrollContentHeight = mScrollView.getChildAt(0).getMeasuredHeight();
-            mScrollViewHeight = mScrollView.getMeasuredHeight();
+            mScrollContentWidth = mScrollView.getChildAt(0).getMeasuredWidth();
+            mScrollViewWidth = mScrollView.getMeasuredWidth();
 
         }
         if (mBackground != null)
         {
-            int minHeight = 0;
-            minHeight = (int) (mScrollViewHeight + mParallaxOffset
-                    * (mScrollContentHeight - mScrollViewHeight));
-            minHeight = Math.max(minHeight, MeasureSpec.getSize(heightMeasureSpec));
+            int minWidth = 0;
+            minWidth = (int) (mScrollViewWidth + mParallaxOffset
+                    * (mScrollContentWidth - mScrollViewWidth));
+            minWidth = Math.max(minWidth, MeasureSpec.getSize(widthMeasureSpec));
 
-            measureChild(mBackground, MeasureSpec.makeMeasureSpec(
-                    MeasureSpec.getSize(widthMeasureSpec), MeasureSpec.EXACTLY),
-                    MeasureSpec.makeMeasureSpec(minHeight, MeasureSpec.EXACTLY));
+            measureChild(mBackground,
+                    MeasureSpec.makeMeasureSpec(
+                            minWidth,
+                            MeasureSpec.EXACTLY),
+                    MeasureSpec.makeMeasureSpec(
+                            MeasureSpec.getSize(heightMeasureSpec),
+                            MeasureSpec.EXACTLY));
 
             mBackgroundRight = getLeft() + mBackground.getMeasuredWidth();
             mBackgroundBottom = getTop() + mBackground.getMeasuredHeight();
 
-            mScrollDiff = (float) (mBackground.getMeasuredHeight() - mScrollViewHeight)
-                    / (float) (mScrollContentHeight - mScrollViewHeight);
+            mScrollDiff = (float) (mBackground.getMeasuredWidth() - mScrollViewWidth)
+                    / (float) (mScrollContentWidth - mScrollViewWidth);
         }
 
     }
@@ -271,12 +281,9 @@ public class HorizontalParallaxScrollView extends ViewGroup
 
         if (mBackground != null)
         {
-            final int scrollYCenterOffset = -mScrollView.getScrollY();
-            final int offset = (int) (scrollYCenterOffset * mScrollDiff);
-            // Log.d(TAG, "Layout Scroll Y: " + scrollYCenterOffset +
-            // " ScrollDiff: " + mScrollDiff
-            // + " Background Offset:" + offset);
-            mBackground.layout(getLeft(), offset, mBackgroundRight, offset + mBackgroundBottom);
+            final int scrollXCenterOffset = -mScrollView.getScrollX();
+            final int offset = (int) (scrollXCenterOffset * mScrollDiff);
+            mBackground.layout(offset, getTop(), offset + mBackgroundRight, mBackgroundBottom);
         }
     }
 
