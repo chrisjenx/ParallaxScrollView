@@ -2,6 +2,7 @@ package couk.jenxsol.parallaxscrollview.views;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.View;
@@ -198,7 +199,11 @@ public class ParallaxScrollView extends ViewGroup
                     MeasureSpec.getSize(widthMeasureSpec), MeasureSpec.EXACTLY),
                     MeasureSpec.makeMeasureSpec(minHeight, MeasureSpec.EXACTLY));
 
-            mBackgroundRight = getLeft() + mBackground.getMeasuredWidth();
+            if (getParent() instanceof ViewPager) {
+                mBackgroundRight = mBackground.getMeasuredWidth();
+            } else {
+                mBackgroundRight = getLeft() + mBackground.getMeasuredWidth();
+            }
             mBackgroundBottom = getTop() + mBackground.getMeasuredHeight();
 
             mScrollDiff = (float) (mBackground.getMeasuredHeight() - mScrollViewHeight)
@@ -277,7 +282,12 @@ public class ParallaxScrollView extends ViewGroup
             // Log.d(TAG, "Layout Scroll Y: " + scrollYCenterOffset +
             // " ScrollDiff: " + mScrollDiff
             // + " Background Offset:" + offset);
-            mBackground.layout(getLeft(), offset, mBackgroundRight, offset + mBackgroundBottom);
+            if (getParent() instanceof ViewPager) {
+                mBackground.layout(0, offset, mBackgroundRight, offset + mBackgroundBottom);
+            } else {
+                mBackground.layout(getLeft(), offset, mBackgroundRight, offset + mBackgroundBottom);
+            }
+
         }
     }
 
