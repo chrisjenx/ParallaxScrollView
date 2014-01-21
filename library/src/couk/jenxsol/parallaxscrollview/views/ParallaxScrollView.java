@@ -3,7 +3,6 @@ package couk.jenxsol.parallaxscrollview.views;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -265,7 +264,6 @@ public class ParallaxScrollView extends ViewGroup
                 default:
                     childTop = parentTop + lp.topMargin;
             }
-            Log.d("Paralax","l: "+childLeft+" - w: "+width);
             mScrollView.layout(childLeft, childTop, childLeft + width, childTop + height);
 
         }
