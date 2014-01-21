@@ -178,10 +178,7 @@ public class ParallaxScrollView extends ViewGroup
 
         if (mScrollView != null)
         {
-            measureChild(mScrollView, MeasureSpec.makeMeasureSpec(
-                    MeasureSpec.getSize(widthMeasureSpec), MeasureSpec.AT_MOST),
-                    MeasureSpec.makeMeasureSpec(MeasureSpec.getSize(heightMeasureSpec),
-                            MeasureSpec.AT_MOST));
+        	measureChildren(widthMeasureSpec, heightMeasureSpec);
 
             mScrollContentHeight = mScrollView.getChildAt(0).getMeasuredHeight();
             mScrollViewHeight = mScrollView.getMeasuredHeight();
@@ -218,9 +215,9 @@ public class ParallaxScrollView extends ViewGroup
         {
             final FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) mScrollView
                     .getLayoutParams();
-
-            final int width = mScrollView.getMeasuredWidth();
-            final int height = mScrollView.getMeasuredHeight();
+            
+            final int width = (lp.width==LayoutParams.MATCH_PARENT?this.getWidth():mScrollView.getMeasuredWidth());
+            final int height = (lp.height==LayoutParams.MATCH_PARENT?this.getHeight():mScrollView.getMeasuredHeight());
 
             int childLeft;
             int childTop;
@@ -265,14 +262,13 @@ public class ParallaxScrollView extends ViewGroup
                 default:
                     childTop = parentTop + lp.topMargin;
             }
-
             mScrollView.layout(childLeft, childTop, childLeft + width, childTop + height);
 
         }
 
         if (mBackground != null)
         {
-            final int scrollYCenterOffset = -mScrollView.getScrollY();
+            final int scrollYCenterOffset = mScrollView.getScrollY();
             final int offset = (int) (scrollYCenterOffset * mScrollDiff);
             // Log.d(TAG, "Layout Scroll Y: " + scrollYCenterOffset +
             // " ScrollDiff: " + mScrollDiff
