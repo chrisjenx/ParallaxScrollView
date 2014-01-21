@@ -3,6 +3,7 @@ package couk.jenxsol.parallaxscrollview.views;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -216,8 +217,10 @@ public class ParallaxScrollView extends ViewGroup
             final FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) mScrollView
                     .getLayoutParams();
             
-            final int width = (lp.width==LayoutParams.MATCH_PARENT?this.getWidth():mScrollView.getMeasuredWidth());
-            final int height = (lp.height==LayoutParams.MATCH_PARENT?this.getHeight():mScrollView.getMeasuredHeight());
+            @SuppressWarnings("deprecation")
+			final int width = (lp.width==LayoutParams.MATCH_PARENT||lp.width==LayoutParams.FILL_PARENT)?this.getWidth():mScrollView.getMeasuredWidth();
+            @SuppressWarnings("deprecation")
+			final int height = (lp.height==LayoutParams.MATCH_PARENT||lp.height==LayoutParams.FILL_PARENT)?this.getHeight():mScrollView.getMeasuredHeight();
 
             int childLeft;
             int childTop;
@@ -262,6 +265,7 @@ public class ParallaxScrollView extends ViewGroup
                 default:
                     childTop = parentTop + lp.topMargin;
             }
+            Log.d("Paralax","l: "+childLeft+" - w: "+width);
             mScrollView.layout(childLeft, childTop, childLeft + width, childTop + height);
 
         }
