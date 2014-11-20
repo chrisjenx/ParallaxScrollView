@@ -1,5 +1,6 @@
-ParallaxScrollView
+ParallaxScrollView - DEPRECATED
 ==================
+DEPRECATED - Use the project for more of guide and ideas how to apply parallax techniques. Parralloid has more abstract implimentations. 
 
 A Parallax ScrollView which takes a background and foreground view, in the ParallexScrollView.
 
