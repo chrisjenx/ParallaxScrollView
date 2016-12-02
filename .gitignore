@@ -18,3 +18,9 @@ local.properties
 # Eclipse project files
 .classpath
 .project
+
+*.iml
+.idea/
+
+.DS_Store
+out/

@@ -14,21 +14,21 @@ import couk.jenxsol.parallaxscrollview.R;
 /**
  * A custom ScrollView that can accept a scroll listener.
  */
-public class ParallaxScrollView extends ViewGroup
+public class HorizontalParallaxScrollView extends ViewGroup
 {
     private static final int DEFAULT_CHILD_GRAVITY = Gravity.CENTER_HORIZONTAL;
 
     private static final String TAG = "ParallaxScrollView";
 
     private static float PARALLAX_OFFSET_DEFAULT = 0.2f;
-
+    
     /**
      * By how much should the background move to the foreground
      */
     private float mParallaxOffset = PARALLAX_OFFSET_DEFAULT;
 
     private View mBackground;
-    private ObservableScrollView mScrollView;
+    private HorizontalObservableScrollView mScrollView;
     private final ScrollCallbacks mScrollCallbacks = new ScrollCallbacks()
     {
         @Override
@@ -45,17 +45,17 @@ public class ParallaxScrollView extends ViewGroup
     /**
      * Height of the Foreground ScrollView Content
      */
-    private int mScrollContentHeight = 0;
+    private int mScrollContentWidth = 0;
     /**
      * Height of the ScrollView, should be the same as this view
      */
-    private int mScrollViewHeight = 0;
+    private int mScrollViewWidth = 0;
     /**
      * The multipler by how much to move the background to the foreground
      */
     private float mScrollDiff = 0f;
 
-    public ParallaxScrollView(Context context, AttributeSet attrs, int defStyle)
+    public HorizontalParallaxScrollView(Context context, AttributeSet attrs, int defStyle)
     {
         super(context, attrs, defStyle);
 
@@ -76,12 +76,12 @@ public class ParallaxScrollView extends ViewGroup
         }
     }
 
-    public ParallaxScrollView(Context context, AttributeSet attrs)
+    public HorizontalParallaxScrollView(Context context, AttributeSet attrs)
     {
         this(context, attrs, 0);
     }
 
-    public ParallaxScrollView(Context context)
+    public HorizontalParallaxScrollView(Context context)
     {
         this(context, null);
     }
@@ -104,7 +104,7 @@ public class ParallaxScrollView extends ViewGroup
     }
 
     @Override
-    public void addView(View child, int index, android.view.ViewGroup.LayoutParams params)
+    public void addView(View child, int index, LayoutParams params)
     {
         if (getChildCount() > 1)
             throw new IllegalStateException("ParallaxScrollView can host only two direct children");
@@ -120,7 +120,7 @@ public class ParallaxScrollView extends ViewGroup
     }
 
     @Override
-    public void addView(View child, android.view.ViewGroup.LayoutParams params)
+    public void addView(View child, LayoutParams params)
     {
         if (getChildCount() > 1)
             throw new IllegalStateException("ParallaxScrollView can host only two direct children");
@@ -129,7 +129,7 @@ public class ParallaxScrollView extends ViewGroup
 
     /**
      * Set the offset
-     * 
+     *
      * @param offset
      *            a number greater than 0.0
      */
@@ -147,7 +147,7 @@ public class ParallaxScrollView extends ViewGroup
 
     /**
      * Get the current offset
-     * 
+     *
      * @return
      */
     public float getParallaxOffset()
@@ -177,31 +177,41 @@ public class ParallaxScrollView extends ViewGroup
 
         if (mScrollView != null)
         {
-            measureChild(mScrollView, MeasureSpec.makeMeasureSpec(
-                    MeasureSpec.getSize(widthMeasureSpec), MeasureSpec.AT_MOST),
-                    MeasureSpec.makeMeasureSpec(MeasureSpec.getSize(heightMeasureSpec),
-                            MeasureSpec.AT_MOST));
+            measureChild(mScrollView,
+                    MeasureSpec.makeMeasureSpec(
+                            MeasureSpec.getSize(widthMeasureSpec),
+                            MeasureSpec.AT_MOST
+                    ),
+                    MeasureSpec.makeMeasureSpec(
+                            MeasureSpec.getSize(heightMeasureSpec),
+                            MeasureSpec.AT_MOST
+                    )
+            );
 
-            mScrollContentHeight = mScrollView.getChildAt(0).getMeasuredHeight();
-            mScrollViewHeight = mScrollView.getMeasuredHeight();
+            mScrollContentWidth = mScrollView.getChildAt(0).getMeasuredWidth();
+            mScrollViewWidth = mScrollView.getMeasuredWidth();
 
         }
         if (mBackground != null)
         {
-            int minHeight = 0;
-            minHeight = (int) (mScrollViewHeight + mParallaxOffset
-                    * (mScrollContentHeight - mScrollViewHeight));
-            minHeight = Math.max(minHeight, MeasureSpec.getSize(heightMeasureSpec));
+            int minWidth = 0;
+            minWidth = (int) (mScrollViewWidth + mParallaxOffset
+                    * (mScrollContentWidth - mScrollViewWidth));
+            minWidth = Math.max(minWidth, MeasureSpec.getSize(widthMeasureSpec));
 
-            measureChild(mBackground, MeasureSpec.makeMeasureSpec(
-                    MeasureSpec.getSize(widthMeasureSpec), MeasureSpec.EXACTLY),
-                    MeasureSpec.makeMeasureSpec(minHeight, MeasureSpec.EXACTLY));
+            measureChild(mBackground,
+                    MeasureSpec.makeMeasureSpec(
+                            minWidth,
+                            MeasureSpec.EXACTLY),
+                    MeasureSpec.makeMeasureSpec(
+                            MeasureSpec.getSize(heightMeasureSpec),
+                            MeasureSpec.EXACTLY));
 
             mBackgroundRight = getLeft() + mBackground.getMeasuredWidth();
             mBackgroundBottom = getTop() + mBackground.getMeasuredHeight();
 
-            mScrollDiff = (float) (mBackground.getMeasuredHeight() - mScrollViewHeight)
-                    / (float) (mScrollContentHeight - mScrollViewHeight);
+            mScrollDiff = (float) (mBackground.getMeasuredWidth() - mScrollViewWidth)
+                    / (float) (mScrollContentWidth - mScrollViewWidth);
         }
 
     }
@@ -271,12 +281,9 @@ public class ParallaxScrollView extends ViewGroup
 
         if (mBackground != null)
         {
-            final int scrollYCenterOffset = -mScrollView.getScrollY();
-            final int offset = (int) (scrollYCenterOffset * mScrollDiff);
-            // Log.d(TAG, "Layout Scroll Y: " + scrollYCenterOffset +
-            // " ScrollDiff: " + mScrollDiff
-            // + " Background Offset:" + offset);
-            mBackground.layout(getLeft(), offset, mBackgroundRight, offset + mBackgroundBottom);
+            final int scrollXCenterOffset = -mScrollView.getScrollX();
+            final int offset = (int) (scrollXCenterOffset * mScrollDiff);
+            mBackground.layout(offset, getTop(), offset + mBackgroundRight, mBackgroundBottom);
         }
     }
 
@@ -290,7 +297,7 @@ public class ParallaxScrollView extends ViewGroup
     }
 
     @Override
-    protected ViewGroup.LayoutParams generateLayoutParams(ViewGroup.LayoutParams p)
+    protected LayoutParams generateLayoutParams(LayoutParams p)
     {
         return new FrameLayout.LayoutParams(p);
     }
@@ -306,7 +313,7 @@ public class ParallaxScrollView extends ViewGroup
      * {@inheritDoc}
      */
     @Override
-    protected boolean checkLayoutParams(ViewGroup.LayoutParams p)
+    protected boolean checkLayoutParams(LayoutParams p)
     {
         return p instanceof FrameLayout.LayoutParams;
     }
@@ -349,16 +356,16 @@ public class ParallaxScrollView extends ViewGroup
         final int insertPos = getChildCount() - 1;
 
         // See if its a observable scroll view?
-        if (foreground instanceof ObservableScrollView)
+        if (foreground instanceof HorizontalObservableScrollView)
         {
             // Attach the callback to it.
-            mScrollView = (ObservableScrollView) foreground;
+            mScrollView = (HorizontalObservableScrollView) foreground;
         }
         else if (foreground instanceof ViewGroup && !(foreground instanceof ScrollView))
         {
             // See if it is a view group but not a scroll view and wrap it
             // with an observable ScrollView
-            mScrollView = new ObservableScrollView(getContext(), null);
+            mScrollView = new HorizontalObservableScrollView(getContext(), null);
             removeView(foreground);
             mScrollView.addView(foreground);
             addView(mScrollView, insertPos);
@@ -371,14 +378,14 @@ public class ParallaxScrollView extends ViewGroup
             else
                 child = null;
 
-            mScrollView = new ObservableScrollView(getContext(), null);
+            mScrollView = new HorizontalObservableScrollView(getContext(), null);
             removeView(foreground);
             if (child != null) mScrollView.addView(child);
             addView(mScrollView, insertPos);
         }
         else if (foreground instanceof View)
         {
-            mScrollView = new ObservableScrollView(getContext(), null);
+            mScrollView = new HorizontalObservableScrollView(getContext(), null);
             removeView(foreground);
             mScrollView.addView(foreground);
             addView(mScrollView, insertPos);

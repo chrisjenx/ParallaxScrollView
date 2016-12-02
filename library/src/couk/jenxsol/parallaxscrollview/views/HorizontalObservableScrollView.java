@@ -3,13 +3,13 @@ package couk.jenxsol.parallaxscrollview.views;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.util.AttributeSet;
-import android.widget.ScrollView;
+import android.widget.HorizontalScrollView;
 
-public class ObservableScrollView extends ScrollView
+public class HorizontalObservableScrollView extends HorizontalScrollView
 {
     private ScrollCallbacks mCallbacks;
 
-    public ObservableScrollView(Context context, AttributeSet attrs)
+    public HorizontalObservableScrollView(Context context, AttributeSet attrs)
     {
         super(context, attrs);
     }
@@ -25,9 +25,9 @@ public class ObservableScrollView extends ScrollView
     }
 
     @Override
-    public int computeVerticalScrollRange()
+    public int computeHorizontalScrollRange()
     {
-        return super.computeVerticalScrollRange();
+        return super.computeHorizontalScrollRange();
     }
 
     public void setCallbacks(ScrollCallbacks listener)
